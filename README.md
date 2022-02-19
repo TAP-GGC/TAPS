@@ -1,2 +1,2 @@
 # TAPS
-TAPS workshops materials
+Technology Ambassadors Program Sharp (TAPS) Club at GGC. Includes club workshops materials.
