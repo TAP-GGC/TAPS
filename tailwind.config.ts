@@ -76,21 +76,13 @@ const config: Config = {
           80: '20rem',
           96: '24rem',
         },
-        margin: {
-          page: '',
-          nav: '',
-          footer: ''  
-        },
-        fontSize: {
-
-        },
         borderRadius: {  
           'none': '0',
           'sm': '.125rem',
           DEFAULT: '.25rem',
           'lg': '.5rem',
           'full': '9999px',
-        }
+        },
       }
     },
   },
