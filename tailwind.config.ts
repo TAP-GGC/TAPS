@@ -43,17 +43,6 @@ const config: Config = {
           300: '#6B0000',
         },
       }, 
-      borderRadius: {  
-        'none': '0',
-        'sm': '.125rem',
-        DEFAULT: '.25rem',
-        'lg': '.5rem',
-        'full': '9999px',
-      },
-      transitionProperty: {
-        'height': '',
-        'spacing': ',',
-      },
     },
   },
   plugins: [],
