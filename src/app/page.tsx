@@ -1,29 +1,23 @@
 "use client"
 import { PageBar, Navbar } from './lib'
 import Image from 'next/image'
-import * as logo from './assets/LOGOtransparent.png'
+import * as logo from './assets/media/logos/LOGOtransparent.png'
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
-import { Button } from "@mui/material";
 
-
-const siteNavItems = [
-  { name: 'Upcoming Events', href: '' }, 
-  { name: 'Past Events', href: '' }, 
-  { name: 'Gallery', href: '' }, 
-  { name: 'Contact Us', href: '' }, 
-]
-
-const pageNavItems = [
-  { name: 'Course', href: '' }, 
-  { name: 'About Us', href: '' }, 
-]
+import { siteNavItems, pageNavItems } from './data';
+import { Divider, Stack } from '@mui/material';
 
 export default function Home() {
-
+  const print = () => window.print()
   return (
-    <main>
+    <Box
+    component="main"
+    sx={{
+      bgcolor: 'background.paper',
+      color: 'primary.contrastText'
+    }}>
       <Navbar 
         homePage={ '/' } 
         brand={ "TAPS" }
@@ -32,21 +26,20 @@ export default function Home() {
       />
       <PageBar
         items={ pageNavItems }
+        logo={ <Image src={ logo } width={ 30 } height={ 30 } alt="Grizzly bear line art"/> }
       />
       <Toolbar />
-      <Container>
-        <Box sx={{ my: 2 }}>
-          
-          {[...new Array(52)]
-            .map(
-              () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
-            )
-            .join('\n')}
-        </Box>
-      </Container>
-    </main>
+      <Box>
+        <Stack spacing={ 8 }>
+          {
+            [...new Array(55)].map((e) => {
+              return <Box key={e}>awddddddddddddddddddddddddddaaawddd
+              dddawddddddddddddddddddddddddddaaddd
+              dddddddddd</Box>
+            })
+          }
+        </Stack>
+      </Box>
+    </Box>
   )
 }

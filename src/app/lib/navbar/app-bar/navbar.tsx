@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Slide from '@mui/material/Slide';
-import { AppBar, Box, Button, IconButton, Menu, MenuItem, SvgIcon } from "@mui/material";
+import { AppBar, Box, Button, ButtonBase, Divider, IconButton, Stack, styled } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -40,14 +40,24 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
     <Box>        
       <CssBaseline />
       <HideOnScroll {...windowProps}>
-        <AppBar position={'static'}>
+        <AppBar 
+          position={'static'} 
+          elevation={ 0 }
+          sx={{
+            height: '50px',
+            justifyContent: 'center'
+          }}
+        >
           <Toolbar
-            variant="dense"
             sx={{
               display: 'flex',
-              bgcolor: '#003224',
-              justifyContent: 'space-between'
-            }}>
+              bgcolor: 'primary.dark',
+              color: 'white',
+              fontSize: 14,
+              justifyContent: 'space-between',
+              alignContent: 'center',
+            }}
+          >
             <IconButton
               color="inherit"
               sx={{
@@ -58,13 +68,11 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
             </IconButton> 
             <Box
               sx={{
-                mr: 2,
                 display: 'flex',
                 alignItems: 'center'
               }}> 
               <Box
                 sx={{
-                  mr: 2,
                   display: { xs: 'none', md: 'flex' },
                 }}
               >
@@ -75,34 +83,35 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                 noWrap
                 href={ appBarProps.homePage }
                 sx={{
-                  mr: 2,
                   display: 'flex',
                   color: 'inherit',
                   textDecoration: 'none',
-                  fontSize: '14px',
-                  fontWeight: '200px',
-                  fontFamily: 'monospace',
-                  letterSpacing: '0.2rem',
+                  fontSize: 'inherit',
+                  fontWeight: 200,
+                  letterSpacing: '0.3rem',
                   alignItems: 'center',
                   gap: '10px'
                 }}>
                 { appBarProps.brand }
               </Typography>
             </Box>
-            <Box 
-              sx={{
-                color: 'white',
-                display: { xs: 'none', md: 'flex' },
-                gap: '20px'
-              }}>
+            <Stack 
+              direction="row"
+              divider={<Divider orientation="horizontal" flexItem />}
+              spacing={4}
+              color={ 'white '}
+              display={{ xs: 'none', md: 'flex' }}
+            >
               { 
                 appBarProps.items.map((link) => {
                   return (
                     <Button 
+                      size="small"
                       sx={{
                         color: 'white',
-                        fontSize:'14px',
-                        fontVariant: 'all-small-caps'
+                        fontSize:'inherit',
+                        fontVariant: 'all-small-caps',
+                        letterSpacing: '.1em'
                       }}
                       href={ link.href }
                       key={ link.name }>
@@ -111,7 +120,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                   )
                 })
               }
-            </Box>
+            </Stack>
           </Toolbar>
         </AppBar>
       </HideOnScroll>
