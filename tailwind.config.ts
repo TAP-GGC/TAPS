@@ -10,21 +10,26 @@ const config: Config = {
     extend: {
       screens: {
         'sm': '640px',
-        'md': '768px',
+        'md': '800px',
         'lg': '1024px',
         'xl': '1280px',
         '2xl': '1536px',
       },
       colors: {
-        black: '#000',
+        black: {
+          50: '#00000032',
+          80: '#000000cc',
+          100: '#000'
+        },
         white: {
           50: '#ffffff32',
-          75: '#ffffff4b',
+          80: '#ffffffcc',
           100: '#fff',
         },
         gray: {
-          100: '#EBEBEB',
-          200: '#C4C4C4',
+          50: '#9191914f',
+          100: '#C4C4C4',
+          200: '#cfcfcf',
         },
         primary: {
           100: '#50AB83',
