@@ -21,25 +21,37 @@ export default function Home() {
       <Navbar 
         homePage={ '/' } 
         brand={ "TAPS" }
-        logo={ <Image src={ logo } width={ 30 } height={ 30 } alt="Grizzly bear line art"/> }
         items={ siteNavItems }
       />
       <PageBar
         items={ pageNavItems }
-        logo={ <Image src={ logo } width={ 30 } height={ 30 } alt="Grizzly bear line art"/> }
+        enableColorModeSwitch={ true }
       />
       <Toolbar />
-      <Box>
+      <Container>
         <Stack spacing={ 8 }>
           {
             [...new Array(55)].map((e) => {
               return <Box key={e}>awddddddddddddddddddddddddddaaawddd
+              dddawddddddddddddddddddddddddddaadddawddddddddddddddddddddddddddaaawddd
               dddawddddddddddddddddddddddddddaaddd
+              dddddddddd
+              dddddddddd
+              dddddddddd
+              dddddddddd
+              dddddddddd
+              dddddddddd
+              dddawddddddddddddddddddddddddddaaddd
+              dddddddddd
+              dddddddddd
+              dddddddddd
+              dddddddddd
+              dddddddddd
               dddddddddd</Box>
             })
           }
         </Stack>
-      </Box>
+      </Container>
     </Box>
   )
 }

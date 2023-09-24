@@ -1,19 +1,18 @@
 "use client"
-import Link from "next/link";
 import React from "react"
 import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Slide from '@mui/material/Slide';
-import { AppBar, Box, Button, ButtonBase, Divider, IconButton, Stack, styled } from "@mui/material";
+import { AppBar, Box, Button, Divider, IconButton, Stack } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
+import { NavItemsWithChildren } from "@/app/types";
 
 type AppBarProps = {
   brand: string,
   homePage: string,
-  items: { name: string, href: string }[],
-  logo?: React.ReactElement<typeof Image>
+  items: NavItemsWithChildren,
 }
 
 
@@ -41,17 +40,17 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
       <CssBaseline />
       <HideOnScroll {...windowProps}>
         <AppBar 
+          enableColorOnDark
           position={'static'} 
           elevation={ 0 }
           sx={{
             height: '50px',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
           <Toolbar
             sx={{
               display: 'flex',
-              bgcolor: 'primary.dark',
               color: 'white',
               fontSize: 14,
               justifyContent: 'space-between',
@@ -105,18 +104,25 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
               { 
                 appBarProps.items.map((link) => {
                   return (
-                    <Button 
-                      size="small"
-                      sx={{
-                        color: 'white',
-                        fontSize:'inherit',
-                        fontVariant: 'all-small-caps',
-                        letterSpacing: '.1em'
-                      }}
-                      href={ link.href }
-                      key={ link.name }>
-                      { link.name }
-                    </Button>
+                    <Box>
+                      <Button 
+                        size="small"
+                        sx={{
+                          color: 'white',
+                          fontSize:'inherit',
+                          fontVariant: 'all-small-caps',
+                          letterSpacing: '.1em'
+                        }}
+                        href={ link.href }
+                        key={ link.name }>
+                        { link.name }
+                      </Button>
+                      {
+                        Object.hasOwn(link, 'children') ?
+                          ''
+                        : ''
+                      }
+                    </Box>
                   )
                 })
               }

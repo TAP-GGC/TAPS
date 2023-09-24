@@ -1,4 +1,5 @@
-import Navbar from "./navbar/app-bar/navbar";
-import PageBar from "./navbar/page-navbar/page-navigation-bar";
+import Navbar from "./navbar/siteNav";
+import PageBar from "./navbar/pageNav";
+import ColorModeSwitch from "./colorModeSwitch"
 
-export { Navbar, PageBar }
+export { Navbar, PageBar, ColorModeSwitch }
