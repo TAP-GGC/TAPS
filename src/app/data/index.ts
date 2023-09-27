@@ -3,7 +3,7 @@ import { NavItemsWithChildren, NavItemsNoChildren } from "@/app/types"
 export const siteNavItems: NavItemsWithChildren = [
   { 
     name: 'Calendar', 
-    href: '' 
+    href: '',
   }, 
   { 
     name: 'Events', 

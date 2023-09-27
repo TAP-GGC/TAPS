@@ -1,7 +1,7 @@
 "use client"
 import { Box, Switch, styled }  from '@mui/material'
 import { useState, useContext } from "react"
-import { ThemeContext } from '@/app/util/context'
+import { ThemeContext } from '@/app/util/Context'
 
 const ThemeSwitch = styled(Switch)(({ theme }) => ({
     width: 65,
@@ -9,11 +9,11 @@ const ThemeSwitch = styled(Switch)(({ theme }) => ({
     '& .MuiSwitch-switchBase': {
       marginTop: 10.2,
       padding: 0,
-      transform: 'translateX(14px)',
+      transform: 'translateX(12px)',
       transition: '0.5s ease-in-out',
       '&.Mui-checked': {
         color: '#fff',
-        transform: 'translateX(26px)',
+        transform: 'translateX(32px)',
         transition: '0.5s ease-in-out',
         '& .MuiSwitch-thumb:before': {
           backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
@@ -63,7 +63,6 @@ export const ColorModeSwitch = () => {
         display={ {xs: 'none', sm: 'flex'} }
     >
         <ThemeSwitch
-            defaultChecked
             checked={ checked }
             onClick={ colorMode.toggleColorMode }
             onChange={ () => setChecked(!checked) }

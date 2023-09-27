@@ -1,4 +1,4 @@
-import { AppBar, Button, Container, IconButton } from "@mui/material";
+import { AppBar, Button, Container, IconButton, Stack } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
 import { NavItemsNoChildren } from "@/app/types";
@@ -34,17 +34,18 @@ export const PageBar = (props: PageBarProps) => {
         >
         { 
           props.items.map((link) => {
-              return (
+            return (
               <Button 
+                key={props.items.indexOf(link)}
                 sx={{
                   color: 'primary.contrastText',
                   fontSize: 13,
                 }}  
                 href={ link.href }
               >
-                  { link.name }
+                { link.name }
               </Button>
-              )
+            )
           })
         }
         </Container>

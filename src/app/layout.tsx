@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { ThemeProvider, useMediaQuery } from '@mui/material'
 import { theme } from './theme/theme'
 import { PaletteMode } from '@mui/material';
-import { ThemeContext } from './util/context'
+import { ThemeContext } from './util/Context'
 
 export const metadata: Metadata = {
   title: 'TAPS',

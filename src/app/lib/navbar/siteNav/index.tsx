@@ -4,10 +4,13 @@ import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Slide from '@mui/material/Slide';
-import { AppBar, Box, Button, Divider, IconButton, Stack } from "@mui/material";
+import { AppBar, Box, Button, Divider, IconButton, Menu, MenuItem, MenuList, Popover, Popper, Stack } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import { NavItemsWithChildren } from "@/app/types";
+import { HasProperty } from "@/app/util/HasProperty";
+import { NotNullable } from "@/app/util/NotNullable";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 type AppBarProps = {
   brand: string,
@@ -35,6 +38,19 @@ function HideOnScroll(windowProps: WindowProps) {
 }
 
 export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProps) {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [open, setOpen] = React.useState<string | undefined>()
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, element: any) => {
+    setOpen(element.name)
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null)
+    setOpen(undefined)
+  }
+
   return (
     <Box>        
       <CssBaseline />
@@ -65,37 +81,25 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
             >
               <MenuIcon/>  
             </IconButton> 
-            <Box
+            <Typography 
+              variant="h6" 
+              component="a"
+              noWrap
+              href={ appBarProps.homePage }
               sx={{
                 display: 'flex',
-                alignItems: 'center'
-              }}> 
-              <Box
-                sx={{
-                  display: { xs: 'none', md: 'flex' },
-                }}
-              >
-              </Box>
-              <Typography 
-                variant="h6" 
-                component="a"
-                noWrap
-                href={ appBarProps.homePage }
-                sx={{
-                  display: 'flex',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  fontSize: 'inherit',
-                  fontWeight: 200,
-                  letterSpacing: '0.3rem',
-                  alignItems: 'center',
-                  gap: '10px'
-                }}>
-                { appBarProps.brand }
-              </Typography>
-            </Box>
+                color: 'inherit',
+                textDecoration: 'none',
+                fontSize: 'inherit',
+                fontWeight: 200,
+                letterSpacing: '0.3rem',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+              { appBarProps.brand }
+            </Typography>
             <Stack 
-              direction="row"
+              direction={"row"}
               divider={<Divider orientation="horizontal" flexItem />}
               spacing={4}
               color={ 'white '}
@@ -104,8 +108,11 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
               { 
                 appBarProps.items.map((link) => {
                   return (
-                    <Box>
+                    <Stack
+                      key={appBarProps.items.indexOf(link)}
+                    >
                       <Button 
+                        onClick={ (event) => handleClick(event, link) }
                         size="small"
                         sx={{
                           color: 'white',
@@ -114,15 +121,35 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                           letterSpacing: '.1em'
                         }}
                         href={ link.href }
-                        key={ link.name }>
+                        key={ link.name }
+                        endIcon= { 
+                          HasProperty(link, "children") && NotNullable(link.children) ? <KeyboardArrowDownIcon /> : '' 
+                        }
+                      >
                         { link.name }
                       </Button>
                       {
-                        Object.hasOwn(link, 'children') ?
-                          ''
-                        : ''
+                        HasProperty(link, "children") && NotNullable(link.children) ?
+                        <Menu 
+                          open={ open === link.name }
+                          onClose={ handleClose }
+                          anchorEl={ anchorEl }
+                        >
+                          {
+                            link.children?.map((subListLink) => {
+                              return (
+                                <MenuItem
+                                  key={ link.children?.indexOf(subListLink) }
+                                  onClick={ handleClose }
+                                >
+                                  { subListLink.name }
+                                </MenuItem>
+                              )
+                            })
+                          }
+                        </Menu> : ''
                       }
-                    </Box>
+                    </Stack>
                   )
                 })
               }
@@ -130,9 +157,6 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      <nav>
-        
-      </nav>
     </Box>  
   )
 }
