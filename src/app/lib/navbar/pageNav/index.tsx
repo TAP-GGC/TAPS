@@ -1,4 +1,4 @@
-import { AppBar, Button, Container, IconButton } from "@mui/material";
+import { AppBar, Button, Container, Divider, IconButton } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
 import { NavItemsNoChildren } from "@/app/types";
@@ -14,6 +14,7 @@ export const PageBar = (props: PageBarProps) => {
 
   return (
     <AppBar 
+      elevation={0}
       position={'sticky'}
       sx={{
           bgcolor: 'white',
