@@ -1,16 +1,36 @@
 "use client"
 import React from "react"
+import Image from "next/image";
 import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Slide from '@mui/material/Slide';
-import { AppBar, Box, Button, Divider, IconButton, Menu, MenuItem, MenuList, Popover, Popper, Stack } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
+import { 
+  AppBar, 
+  Box, 
+  Button, 
+  Collapse, 
+  Divider, 
+  Drawer, 
+  IconButton, 
+  List, 
+  ListItem, 
+  ListItemButton, 
+  ListItemIcon, 
+  ListItemText, 
+  Menu, 
+  MenuItem, 
+  Stack 
+} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { NavItemsWithChildren } from "@/app/types";
 import { HasProperty } from "@/app/util/HasProperty";
 import { NotNullable } from "@/app/util/NotNullable";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import * as logo from '@/app/assets/media/logos/TAPS Transparent.png'
 
 type AppBarProps = {
   brand: string,
@@ -18,42 +38,129 @@ type AppBarProps = {
   items: NavItemsWithChildren,
 }
 
-
 interface WindowProps {
   window?: () => Window;
   children: React.ReactElement;
 }
 
-function HideOnScroll(windowProps: WindowProps) {
-  const { children, window } = windowProps;
-  const trigger = useScrollTrigger({
-    target: window ? window() : undefined,
-  });
-
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-}
-
 export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const [open, setOpen] = React.useState<string | undefined>()
+
+  const [LGWindowOpen, setLGWindowOpen] = React.useState<string | undefined>()
+
+  const [XSItemOpen, setXSItemOpen] = React.useState<[string, boolean]>(['', false])
+
+  const [XSWindowOpen, setXSWindowOpen] = React.useState<boolean>(false)
+
+
+  function HideOnScroll(windowProps: WindowProps) {
+    const { children, window } = windowProps;
+    const trigger = useScrollTrigger({
+      target: window ? window() : undefined,
+    });
+
+    return (
+      <Slide appear={false} direction="down" in={!trigger}>
+        {children}
+      </Slide>
+    );
+  }
+
+  const handleXSWindowClose = () => {
+    setXSWindowOpen(!XSWindowOpen)
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, element: any) => {
-    setOpen(element.name)
+    setLGWindowOpen(element.name)
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleSmNavClick = (element: any) => {
+    setXSItemOpen([element.name, !XSItemOpen[1]])
   };
 
   const handleClose = () => {
     setAnchorEl(null)
-    setOpen(undefined)
+    setLGWindowOpen(undefined)
   }
 
+  const XSDrawer = (
+    <List
+      sx={{
+        display: { xs: 'flex', md: 'none' },
+        flexDirection: 'column',
+        bgcolor: 'background.default',
+        height: '100%'
+      }}
+    >
+      <ListItemIcon
+        sx={{
+          p: 2
+        }}
+      >
+        <Image src={logo} width={150} alt="TAPS Logo"/>
+      </ListItemIcon>       
+      {
+        appBarProps.items.map((link) => {
+          return (
+            <Box
+              key={link.name}
+            >
+              <ListItem 
+              disableGutters 
+              disablePadding 
+              divider
+            >
+              <ListItemButton 
+                onClick={() => handleSmNavClick(link)}
+                href={link.href}
+              >
+                <ListItemText>{ link.name }</ListItemText>
+              { 
+                HasProperty(link, "children") ? 
+                XSItemOpen[0] === link.name  ? <ExpandMore/> : <ExpandLess/> 
+                : ''
+              }
+              </ListItemButton>
+            </ListItem>
+              <Collapse in={XSItemOpen[0] === link.name} timeout={'auto'} unmountOnExit>
+                <List 
+                  disablePadding
+                  dense
+                >
+                  {
+                    HasProperty(link, "children") && NotNullable(link.children) ?
+                    link.children?.map((subListLink) => {
+                      return (
+                        <ListItem 
+                          key={subListLink.name}
+                          disableGutters 
+                          disablePadding 
+                        >
+                          <ListItemButton 
+                            href={subListLink.href}
+                            sx={{
+                              px: 5
+                            }}
+                          >
+                            <ListItemText>{ subListLink.name }</ListItemText>
+                          </ListItemButton>
+                        </ListItem>
+                      )
+                    }) : ''
+                  }
+                </List>
+              </Collapse>
+            </Box>
+          )
+        })
+      }
+    </List>
+  )
+
   return (
-    <Box>        
-      <CssBaseline />
+    <div>
+      <CssBaseline />      
       <HideOnScroll {...windowProps}>
         <AppBar 
           enableColorOnDark
@@ -75,6 +182,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
           >
             <IconButton
               color="inherit"
+              onClick={handleXSWindowClose}
               sx={{
                 display: { xs: 'flex', md: 'none' }
               }}
@@ -112,7 +220,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                       key={appBarProps.items.indexOf(link)}
                     >
                       <Button 
-                        onClick={ (event) => handleClick(event, link) }
+                        onMouseOver={ (event) => handleClick(event, link) }
                         size="small"
                         sx={{
                           color: 'white',
@@ -131,7 +239,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                       {
                         HasProperty(link, "children") && NotNullable(link.children) ?
                         <Menu 
-                          open={ open === link.name }
+                          open={ LGWindowOpen === link.name }
                           onClose={ handleClose }
                           anchorEl={ anchorEl }
                         >
@@ -157,6 +265,18 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-    </Box>  
+      <nav>
+        <Drawer
+          variant="temporary"
+          open={XSWindowOpen}
+          onClose={handleXSWindowClose}
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+          }}
+        >
+          { XSDrawer }
+        </Drawer>
+      </nav>
+    </div> 
   )
 }

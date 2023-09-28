@@ -3,7 +3,7 @@ import './globals.css'
 import { useMemo, useState, useEffect } from 'react'
 import type { Metadata } from 'next'
 import { ThemeProvider, useMediaQuery } from '@mui/material'
-import { theme } from './theme/theme'
+import { theme } from './theme/Theme'
 import { PaletteMode } from '@mui/material';
 import { ThemeContext } from './util/Context'
 
