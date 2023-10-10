@@ -1,12 +1,12 @@
-import { AppBar, Button, Container, IconButton, Stack } from "@mui/material";
+import { AppBar, Button, Container, Divider, IconButton, Stack } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-import { NavItemsNoChildren } from "@/app/types";
+import { NavItem } from "@/app/types";
 import { ColorModeSwitch } from "../..";
 
 
 type PageBarProps = {
-    items: NavItemsNoChildren,
+    items: NavItem[],
     enableColorModeSwitch?: boolean
 }
 
@@ -14,6 +14,7 @@ export const PageBar = (props: PageBarProps) => {
 
   return (
     <AppBar 
+      elevation={0}
       position={'sticky'}
       sx={{
           bgcolor: 'white',

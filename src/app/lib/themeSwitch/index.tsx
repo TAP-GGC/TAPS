@@ -1,7 +1,7 @@
 "use client"
 import { Box, Switch, styled }  from '@mui/material'
 import { useState, useContext } from "react"
-import { ThemeContext } from '@/app/util/Context'
+import { ThemeContext } from '@/app/util/context'
 
 const ThemeSwitch = styled(Switch)(({ theme }) => ({
     width: 65,

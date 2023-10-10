@@ -10,6 +10,7 @@ import {
   AppBar, 
   Box, 
   Button, 
+  ClickAwayListener, 
   Collapse, 
   Divider, 
   Drawer, 
@@ -21,13 +22,14 @@ import {
   ListItemText, 
   Menu, 
   MenuItem, 
+  Popover, 
   Stack 
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { NavItemsWithChildren } from "@/app/types";
+import { NavItem, NavItemWithChild } from "@/app/types";
 import { HasProperty } from "@/app/util/HasProperty";
 import { NotNullable } from "@/app/util/NotNullable";
 import * as logo from '@/app/assets/media/logos/TAPS Transparent.png'
@@ -35,7 +37,7 @@ import * as logo from '@/app/assets/media/logos/TAPS Transparent.png'
 type AppBarProps = {
   brand: string,
   homePage: string,
-  items: NavItemsWithChildren,
+  items: NavItemWithChild[],
 }
 
 interface WindowProps {
@@ -52,6 +54,9 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
 
   const [XSWindowOpen, setXSWindowOpen] = React.useState<boolean>(false)
 
+  const navDropdownRoot = React.useRef<HTMLAnchorElement>(null)
+
+  const handleNavDropdownRootRef = navDropdownRoot
 
   function HideOnScroll(windowProps: WindowProps) {
     const { children, window } = windowProps;
@@ -90,15 +95,17 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
         display: { xs: 'flex', md: 'none' },
         flexDirection: 'column',
         bgcolor: 'background.default',
-        height: '100%'
+        height: '100%',
+        p: 4
       }}
     >
       <ListItemIcon
         sx={{
-          p: 2
+          px: 2,
+          py: 2.5,
         }}
       >
-        <Image src={logo} width={150} alt="TAPS Logo"/>
+        <Image src={logo} width={200} alt="TAPS Logo"/>
       </ListItemIcon>       
       {
         appBarProps.items.map((link) => {
@@ -107,23 +114,27 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
               key={link.name}
             >
               <ListItem 
-              disableGutters 
-              disablePadding 
-              divider
-            >
-              <ListItemButton 
-                onClick={() => handleSmNavClick(link)}
-                href={link.href}
+                disableGutters 
+                disablePadding 
+                divider
               >
-                <ListItemText>{ link.name }</ListItemText>
-              { 
-                HasProperty(link, "children") ? 
-                XSItemOpen[0] === link.name  ? <ExpandMore/> : <ExpandLess/> 
-                : ''
-              }
-              </ListItemButton>
-            </ListItem>
-              <Collapse in={XSItemOpen[0] === link.name} timeout={'auto'} unmountOnExit>
+                <ListItemButton 
+                  onClick={() => handleSmNavClick(link)}
+                  href={link.href}
+                >
+                  <ListItemText>{ link.name }</ListItemText>
+                { 
+                  HasProperty(link, "children") ? 
+                  XSItemOpen[0] === link.name  ? <ExpandMore/> : <ExpandLess/> 
+                  : ''
+                }
+                </ListItemButton>
+              </ListItem>
+              <Collapse 
+                in={XSItemOpen[0] === link.name} 
+                timeout={'auto'} 
+                unmountOnExit
+              >
                 <List 
                   disablePadding
                   dense
@@ -139,6 +150,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                         >
                           <ListItemButton 
                             href={subListLink.href}
+                            ref={ navDropdownRoot }
                             sx={{
                               px: 5
                             }}
@@ -156,6 +168,43 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
         })
       }
     </List>
+  )
+
+  const dropdownMenu = (link: NavItemWithChild) => (
+    HasProperty(link, "children") && NotNullable(link.children) ?
+      <Popover 
+        open={ LGWindowOpen === link.name }
+        anchorEl={ anchorEl }
+        onClose={ () => handleClose }
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        // sx={{
+        //   position: 'absolute',
+        //   bgcolor: 'background.default',
+        //   color: 'primary.contrastText',
+        //   boxShadow: '0 0 5px #0005',
+        //   zIndex: 11111
+        // }}
+      > 
+        <List>
+          {
+            link.children?.map((subListLink: NavItem) => {
+              return (
+                <ListItemButton
+                  key={ link.children?.indexOf(subListLink) }
+                  onClick={ handleClose }
+                >
+                  <ListItemText>
+                    { subListLink.name }
+                  </ListItemText>
+                </ListItemButton>
+              )
+            })
+          }
+        </List>
+      </Popover> : ''
   )
 
   return (
@@ -216,7 +265,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
               { 
                 appBarProps.items.map((link) => {
                   return (
-                    <Stack
+                    <Box
                       key={appBarProps.items.indexOf(link)}
                     >
                       <Button 
@@ -236,28 +285,8 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                       >
                         { link.name }
                       </Button>
-                      {
-                        HasProperty(link, "children") && NotNullable(link.children) ?
-                        <Menu 
-                          open={ LGWindowOpen === link.name }
-                          onClose={ handleClose }
-                          anchorEl={ anchorEl }
-                        >
-                          {
-                            link.children?.map((subListLink) => {
-                              return (
-                                <MenuItem
-                                  key={ link.children?.indexOf(subListLink) }
-                                  onClick={ handleClose }
-                                >
-                                  { subListLink.name }
-                                </MenuItem>
-                              )
-                            })
-                          }
-                        </Menu> : ''
-                      }
-                    </Stack>
+                      { dropdownMenu(link) }
+                    </Box>
                   )
                 })
               }

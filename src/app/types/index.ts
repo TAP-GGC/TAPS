@@ -1,12 +1,10 @@
-type NavItem = {
+export type NavItem = {
     name: string
     href: string
 }
-  
-export type NavItemsNoChildren = NavItem[]
 
-export type NavItemsWithChildren = ( 
-        NavItem & { 
-        children?: [NavItem, ...NavItem[]] 
+export type NavItemWithChild = (
+    NavItem & {
+        children?: [NavItem, ...NavItem[]]
     }
-)[]
+)

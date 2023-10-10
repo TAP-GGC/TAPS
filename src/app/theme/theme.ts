@@ -28,7 +28,7 @@ export const theme = (mode: PaletteMode) => createTheme({
           light: '#50AB83',
           main: '#00543D',
           dark: '#003224',
-          contrastText: '#bbb'
+          contrastText: '#fff'
         },
         secondary: {
           light: '#C74242',
@@ -37,7 +37,7 @@ export const theme = (mode: PaletteMode) => createTheme({
           contrastText: '#eee'
         },
         background: {
-          paper: '#121712'
+          paper: '#111'
         }
       })
     },
