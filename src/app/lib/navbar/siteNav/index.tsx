@@ -10,7 +10,6 @@ import {
   AppBar, 
   Box, 
   Button, 
-  ClickAwayListener, 
   Collapse, 
   Divider, 
   Drawer, 
@@ -20,18 +19,15 @@ import {
   ListItemButton, 
   ListItemIcon, 
   ListItemText, 
-  Menu, 
-  MenuItem, 
-  Popover, 
   Stack 
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { NavItem, NavItemWithChild } from "@/app/types";
 import { HasProperty } from "@/app/util/HasProperty";
 import { NotNullable } from "@/app/util/NotNullable";
+import { Dropdown } from "@/app/lib/index";
 import * as logo from '@/app/assets/media/logos/TAPS Transparent.png'
 
 type AppBarProps = {
@@ -46,17 +42,11 @@ interface WindowProps {
 }
 
 export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProps) {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
   const [LGWindowOpen, setLGWindowOpen] = React.useState<string | undefined>()
-
   const [XSItemOpen, setXSItemOpen] = React.useState<[string, boolean]>(['', false])
-
   const [XSWindowOpen, setXSWindowOpen] = React.useState<boolean>(false)
-
-  const navDropdownRoot = React.useRef<HTMLAnchorElement>(null)
-
-  const handleNavDropdownRootRef = navDropdownRoot
+  
+  const LGDropdownRootRef = React.useRef<HTMLButtonElement>(null)
 
   function HideOnScroll(windowProps: WindowProps) {
     const { children, window } = windowProps;
@@ -75,18 +65,26 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
     setXSWindowOpen(!XSWindowOpen)
   }
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, element: any) => {
-    setLGWindowOpen(element.name)
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleSmNavClick = (element: any) => {
+  const handleXSNavClick = (element: any) => {
     setXSItemOpen([element.name, !XSItemOpen[1]])
   };
 
+  const handleClick = (element: any) => {
+    setLGWindowOpen(element.name)
+  };
+
   const handleClose = () => {
-    setAnchorEl(null)
     setLGWindowOpen(undefined)
+  }
+
+  const navDropdownIcon = (link: NavItemWithChild) => {
+    if (HasProperty(link, "children") && NotNullable(link.children)) {
+      if (LGWindowOpen) {
+        return <ExpandLess />
+      }
+      return <ExpandMore />
+    } 
+    return ''
   }
 
   const XSDrawer = (
@@ -119,7 +117,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                 divider
               >
                 <ListItemButton 
-                  onClick={() => handleSmNavClick(link)}
+                  onClick={() => handleXSNavClick(link)}
                   href={link.href}
                 >
                   <ListItemText>{ link.name }</ListItemText>
@@ -133,7 +131,6 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
               <Collapse 
                 in={XSItemOpen[0] === link.name} 
                 timeout={'auto'} 
-                unmountOnExit
               >
                 <List 
                   disablePadding
@@ -150,7 +147,6 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                         >
                           <ListItemButton 
                             href={subListLink.href}
-                            ref={ navDropdownRoot }
                             sx={{
                               px: 5
                             }}
@@ -172,23 +168,10 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
 
   const dropdownMenu = (link: NavItemWithChild) => (
     HasProperty(link, "children") && NotNullable(link.children) ?
-      <Popover 
-        open={ LGWindowOpen === link.name }
-        anchorEl={ anchorEl }
-        onClose={ () => handleClose }
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        // sx={{
-        //   position: 'absolute',
-        //   bgcolor: 'background.default',
-        //   color: 'primary.contrastText',
-        //   boxShadow: '0 0 5px #0005',
-        //   zIndex: 11111
-        // }}
-      > 
-        <List>
+        <Dropdown
+          open = { LGWindowOpen === link.name }
+        > 
+          <List>
           {
             link.children?.map((subListLink: NavItem) => {
               return (
@@ -203,8 +186,8 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
               )
             })
           }
-        </List>
-      </Popover> : ''
+          </List>
+        </Dropdown> : ''
   )
 
   return (
@@ -265,11 +248,14 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
               { 
                 appBarProps.items.map((link) => {
                   return (
-                    <Box
-                      key={appBarProps.items.indexOf(link)}
+                    <Box 
+                      component={'div'} 
+                      onMouseLeave={ () => handleClose() }
+                      key={ appBarProps.items.indexOf(link) }
                     >
                       <Button 
-                        onMouseOver={ (event) => handleClick(event, link) }
+                        ref={LGDropdownRootRef}
+                        onClick={ () => handleClick(link) }
                         size="small"
                         sx={{
                           color: 'white',
@@ -279,9 +265,7 @@ export default function Navbar(appBarProps: AppBarProps, windowProps: WindowProp
                         }}
                         href={ link.href }
                         key={ link.name }
-                        endIcon= { 
-                          HasProperty(link, "children") && NotNullable(link.children) ? <KeyboardArrowDownIcon /> : '' 
-                        }
+                        endIcon= { navDropdownIcon(link) }
                       >
                         { link.name }
                       </Button>

@@ -27,13 +27,6 @@ export default function Home() {
       />
       <Toolbar />
       <Container>
-        <Stack spacing={ 8 }>
-          {
-            [...new Array(55)].map((e) => {
-              return (<Box key={e}>asdijasodjasidaoidjaoidajdioasjdioajdaiosdhasiudahbdiaobdasibdasiohbd</Box>)
-            })
-          }
-        </Stack>
       </Container>
     </Box>
   )

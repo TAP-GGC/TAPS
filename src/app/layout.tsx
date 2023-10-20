@@ -1,11 +1,6 @@
-"use client"
 import './globals.css'
-import { useMemo, useState, useEffect } from 'react'
 import type { Metadata } from 'next'
-import { ThemeProvider, useMediaQuery } from '@mui/material'
-import { PaletteMode } from '@mui/material';
-import { theme } from './theme/theme'
-import { ThemeContext } from './util/context'
+import ThemeWrapper from './theme/ThemeWrapper'
 
 export const metadata: Metadata = {
   title: 'TAPS',
@@ -20,33 +15,11 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
-  const [mode, setMode] = useState<PaletteMode>('light');
-  
-  const prefersDarkMode = useMediaQuery(`(prefers-color-scheme: ${mode})`);
-
-  useEffect(() => {
-    setMode(prefersDarkMode ? 'dark' : 'light')
-  }, [prefersDarkMode])
-
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      },
-      enabled: mode === 'dark'
-    }),
-    [],
-  );
-
-  const themeCreator = useMemo(() => theme(mode), [mode])
-
   return (
-    <ThemeContext.Provider value={colorMode}>
-      <ThemeProvider theme={ themeCreator }>
-        <html lang="en" className='scroll-smooth'>
-          <body>{children}</body>
-        </html>
-      </ThemeProvider>
-    </ThemeContext.Provider>
+    <ThemeWrapper>
+      <html lang="en" className='scroll-smooth'>
+        <body>{children}</body>
+      </html>
+    </ThemeWrapper>
   )
 }
