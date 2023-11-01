@@ -1,30 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Fab from '@mui/material/Fab';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-const Footer = () => {
-   // Define styles for the footer container
-   const footerStyle = {
-    display: 'flex', // Use flexbox for layout
-    justifyContent: 'space-between', // Space between items for horizontal alignment
-    alignItems: 'center', // Center items vertically
-    height: '100px', // Set a fixed height for the footer
-    background: '#D9D9D9', // Background color for the footer
-    color: 'black', // Text color
-    padding: '0 20px', // Add padding to create space between content and edges
+const FabButton = () => {
+  const [showButton, setShowButton] = useState(false);
+
+  const handleScroll = () => {
+    if (window.scrollY > 100) {
+      setShowButton(true);
+    } else {
+      setShowButton(false);
+    }
   };
 
-  // Define styles for text elements within the footer
-  const textSize: React.CSSProperties = {
-    fontSize: '16px', // Adjust the font size as needed
-    flex: 1, // Expand the text elements equally
-    textAlign: 'center', // Center the text horizontally
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
+
+  React.useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
-    <div style={footerStyle}>
-      <p style={textSize}>TAPS Club &copy; GGC</p>
-      <p style={textSize}>Copyright &copy; {new Date().getFullYear()}</p>
+    <div>
+      {showButton && (
+        <Fab
+          color="primary"
+          aria-label="Scroll to top"
+          onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: '160px',
+            right: '40px',
+            backgroundColor: '#960000', // Make the background transparent
+            boxShadow: 'none', // Remove the default shadow
+            transform: 'rotate(45deg)', // Rotate the button by 45 degrees
+            color: 'white',
+          }}
+        >
+          <KeyboardArrowUpIcon
+            style={{
+              transform: 'rotate(-45deg)', // Counter-rotate the icon to make it upright
+            }}
+          />
+        </Fab>
+      )}
+       {showButton && (
+        <p
+          style={{
+            position: 'fixed',
+            bottom: '130px', // Adjust this value as needed
+            right: '20px', // Align with the FAB button
+            color: 'primary',
+          }}
+        >
+          Top of Page
+        </p>
+       )}
     </div>
   );
 };
 
-export default Footer;
+export default FabButton;
